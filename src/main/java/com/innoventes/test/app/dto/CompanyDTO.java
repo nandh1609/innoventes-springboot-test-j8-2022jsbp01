@@ -20,4 +20,7 @@ public class CompanyDTO {
 	private Integer strength;
 	
 	private String webSiteURL;
+
+	//new field
+	private String companyCode;
 }

@@ -1,14 +1,12 @@
 package com.innoventes.test.app.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.AllArgsConstructor;
@@ -31,14 +29,25 @@ public class Company extends BaseEntity {
 	private Long id;
 
 	@Column(name = "company_name")
+	@NotNull
+	@Size(min = 5, message = "The name should be atleast 5 letters in length")
 	private String companyName;
 
 	@Column(name = "email")
+	@NotNull
 	private String email;
 	
 	@Column(name = "strength")
+	@Min(value = 0, message = "The value must be positive")
 	private Integer strength;
 	
 	@Column(name = "website_url")
 	private String webSiteURL;
+
+
+	@Column(name = "company_code")
+	@UniqueElements
+	@Size(min = 5, message = "size should be minimum of 5 letters")
+	@Pattern(regexp = "[a-zA-Z]{2}\\d{2}[EN]", message = "Enter a valid company code")
+	private String companyCode;
 }

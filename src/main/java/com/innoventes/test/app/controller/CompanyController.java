@@ -3,22 +3,17 @@ package com.innoventes.test.app.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import io.swagger.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.innoventes.test.app.dto.CompanyDTO;
@@ -30,6 +25,11 @@ import com.innoventes.test.app.service.CompanyService;
 @RestController
 @RequestMapping("/api/v1")
 public class CompanyController {
+
+	@PatchMapping(value = "/companies/{id}")
+	public ResponseEntity<?> partialUpdateCompany(@PathVariable(value = "id") Long id){
+		return ResponseEntity.ok().build();
+	}
 
 	@Autowired
 	private CompanyMapper companyMapper;
@@ -87,4 +87,28 @@ public class CompanyController {
 		return messageSource.getMessage(exceptionCode, null, LocaleContextHolder.getLocale());
 	}
 
+	@GetMapping(value = "/companies/{id}")
+	public ResponseEntity<CompanyDTO> getCompanyById(@PathVariable(value = "id") Long id){
+		Optional<Company> company = companyService.getCompanyById(id);
+		if(company.isPresent()){
+			CompanyDTO companyDTO = companyMapper.getCompanyDTO(company.get());
+			return ResponseEntity.ok(companyDTO);
+		}
+		else{
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+
+	@GetMapping(value = "companies/{code}")
+	public ResponseEntity<CompanyDTO> getCompanyByCode(@PathVariable(value = "code") String code){
+		Optional<Company> company = companyService.getCompanyByCode(code);
+		if(company.isPresent()){
+			CompanyDTO companyDTO = companyMapper.getCompanyDTO(company.get());
+			return ResponseEntity.ok(companyDTO);
+		}
+		else{
+			return ResponseEntity.notFound().build();
+		}
+	}
 }
